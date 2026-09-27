@@ -1,0 +1,103 @@
+QUESTION 4 – TEST APIs USING API TESTING TOOLS
+
+Use Postman (or Insomnia) instead of a browser to test non-GET routes.
+Verify the status codes and JSON response bodies for each endpoint.
+
+TEST 1 – GET ALL STUDENTS
+
+Method: GET
+URL: http://localhost:3000/students
+
+Expected status: 200 OK
+Expected response: JSON array
+
+Example response:
+[
+    {
+        "id": 1,
+        "name": "Rahul",
+        "age": 20
+    },
+    {
+        "id": 2,
+        "name": "Priya",
+        "age": 21
+    }
+]
+
+
+TEST 2 – CREATE A STUDENT
+
+Method: POST
+URL: http://localhost:3000/students
+
+Postman:
+Body -> raw -> JSON
+
+Request body:
+{
+    "name": "Aman",
+    "age": 22
+}
+
+Expected status: 201 Created
+Expected response: JSON containing the newly created record.
+
+Example:
+{
+    "id": 3,
+    "name": "Aman",
+    "age": 22
+}
+
+
+TEST 3 – UPDATE STUDENT ID 1
+
+Method: PUT
+URL: http://localhost:3000/students/1
+
+Postman:
+Body -> raw -> JSON
+
+Request body:
+{
+    "name": "Rahul Sharma",
+    "age": 21
+}
+
+Expected status: 200 OK
+Expected response: updated student record.
+
+Example:
+{
+    "id": 1,
+    "name": "Rahul Sharma",
+    "age": 21
+}
+
+
+TEST 4 – DELETE UNKNOWN STUDENT
+
+Method: DELETE
+URL: http://localhost:3000/students/99
+
+Expected status: 404 Not Found
+Expected response: JSON error message.
+
+Example:
+{
+    "error": "Student not found"
+}
+
+
+POSTMAN CHECKLIST
+
+1. Start the Express server.
+2. Open Postman.
+3. Send the GET request and verify 200 + JSON array.
+4. Send the POST request with the JSON body and verify 201 + created record.
+5. Send the PUT request for student ID 1 and verify 200 + updated record.
+6. Send the DELETE request for student ID 99 and verify 404 + error message.
+
+Note:
+The exact JSON response depends on the student's existing API implementation. The status codes and response types above are the requirements shown in the question.

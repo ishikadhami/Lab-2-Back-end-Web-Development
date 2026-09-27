@@ -1,0 +1,227 @@
+LAB 2 - QUESTION 2 SOLUTION
+DEVELOP CRUD APIs WITH PROPER RESPONSE AND ERROR HANDLING
+
+Requirement:
+- Implement POST, PUT and DELETE along with GET routes.
+- Return correct HTTP status codes: 201 Created, 400 Bad Request, 404 Not Found.
+- Use try/catch so unexpected errors return a clean JSON error instead of crashing.
+
+FILE: routes/studentRoutes.js
+
+const express = require('express');
+const router = express.Router();
+
+let students = [
+    { id: 1, name: 'Rahul', age: 20, course: 'BCA' },
+    { id: 2, name: 'Priya', age: 21, course: 'BCA' }
+];
+
+// GET - all students
+router.get('/', (req, res) => {
+    try {
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+    }
+});
+
+// GET - student by ID
+router.get('/:id', (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const student = students.find(s => s.id === id);
+
+        if (!student) {
+            return res.status(404).json({
+                error: 'Student not found'
+            });
+        }
+
+        res.status(200).json(student);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+    }
+});
+
+// POST - create a new student
+router.post('/', (req, res) => {
+    try {
+        const { name, age, course } = req.body;
+
+        if (!name || !age || !course) {
+            return res.status(400).json({
+                error: 'Name, age and course are required'
+            });
+        }
+
+        const newStudent = {
+            id: students.length
+                ? Math.max(...students.map(s => s.id)) + 1
+                : 1,
+            name,
+            age,
+            course
+        };
+
+        students.push(newStudent);
+
+        res.status(201).json(newStudent);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+    }
+});
+
+// PUT - update a student
+router.put('/:id', (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const index = students.findIndex(s => s.id === id);
+
+        if (index === -1) {
+            return res.status(404).json({
+                error: 'Student not found'
+            });
+        }
+
+        const { name, age, course } = req.body;
+
+        if (!name || !age || !course) {
+            return res.status(400).json({
+                error: 'Name, age and course are required'
+            });
+        }
+
+        students[index] = {
+            id,
+            name,
+            age,
+            course
+        };
+
+        res.status(200).json(students[index]);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+    }
+});
+
+// DELETE - delete a student
+router.delete('/:id', (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const index = students.findIndex(s => s.id === id);
+
+        if (index === -1) {
+            return res.status(404).json({
+                error: 'Student not found'
+            });
+        }
+
+        const deletedStudent = students.splice(index, 1)[0];
+
+        res.status(200).json({
+            message: 'Student deleted successfully',
+            student: deletedStudent
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+    }
+});
+
+module.exports = router;
+
+
+FILE: app.js
+
+const express = require('express');
+const studentRoutes = require('./routes/studentRoutes');
+
+const app = express();
+
+app.use(express.json());
+
+app.use('/students', studentRoutes);
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+
+HTTP STATUS CODES:
+
+201 Created
+A new student is successfully created.
+
+400 Bad Request
+Required fields are missing.
+
+404 Not Found
+The requested student does not exist.
+
+500 Internal Server Error
+An unexpected server error occurs.
+
+
+API ENDPOINTS:
+
+GET    /students
+GET    /students/:id
+POST   /students
+PUT    /students/:id
+DELETE /students/:id
+
+
+EXAMPLE POST BODY:
+
+{
+    "name": "Aman",
+    "age": 22,
+    "course": "BCA"
+}
+
+
+EXAMPLE POST RESPONSE:
+
+{
+    "id": 3,
+    "name": "Aman",
+    "age": 22,
+    "course": "BCA"
+}
+
+
+EXAMPLE ERROR RESPONSE:
+
+{
+    "error": "Student not found"
+}
+
+
+INSTALLATION:
+
+npm init -y
+npm install express
+
+
+RUN:
+
+node app.js
+
+
+SERVER:
+
+http://localhost:3000
+
+
+END OF QUESTION 2

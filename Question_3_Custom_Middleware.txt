@@ -1,0 +1,50 @@
+QUESTION 3 – IMPLEMENT CUSTOM MIDDLEWARE
+
+Task:
+Write a logger middleware that records method, URL and timestamp for every request.
+Register it globally with app.use() before the routes.
+
+SOLUTION (Express.js):
+
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+// Custom logger middleware
+const logger = (req, res, next) => {
+    const timestamp = new Date().toISOString();
+
+    console.log(
+        `[${timestamp}] ${req.method} ${req.originalUrl}`
+    );
+
+    next();
+};
+
+// Register middleware globally BEFORE routes
+app.use(logger);
+
+// Example route
+app.get("/students", (req, res) => {
+    res.status(200).json([
+        { id: 1, name: "Rahul", age: 20 },
+        { id: 2, name: "Priya", age: 21 }
+    ]);
+});
+
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+
+EXPECTED LOGGER OUTPUT EXAMPLE:
+
+[2026-09-27T05:30:00.000Z] GET /students
+
+Explanation:
+- req.method gives the HTTP method (GET, POST, PUT, DELETE, etc.).
+- req.originalUrl gives the requested URL.
+- new Date().toISOString() gives the timestamp.
+- next() passes control to the next middleware/route.
+- app.use(logger) makes the middleware global.
+- It is placed before the routes so it runs for every request.

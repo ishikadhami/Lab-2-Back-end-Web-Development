@@ -1,0 +1,94 @@
+LAB 2 - QUESTION 1 SOLUTION
+CREATE EXPRESS ROUTES
+
+Requirement:
+- Set up an Express app.
+- Mount a router for the /students resource.
+- Keep routing separate from business logic using routes/studentRoutes.js.
+
+FILE 1: app.js
+
+const express = require('express');
+const studentRoutes = require('./routes/studentRoutes');
+
+const app = express();
+
+app.use(express.json());
+
+// Mount the student router
+app.use('/students', studentRoutes);
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+
+FILE 2: routes/studentRoutes.js
+
+const express = require('express');
+const router = express.Router();
+
+// Student data
+let students = [
+    { id: 1, name: 'Rahul', age: 20, course: 'BCA' },
+    { id: 2, name: 'Priya', age: 21, course: 'BCA' }
+];
+
+// GET all students
+router.get('/', (req, res) => {
+    res.status(200).json(students);
+});
+
+// GET student by ID
+router.get('/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const student = students.find(s => s.id === id);
+
+    if (!student) {
+        return res.status(404).json({
+            error: 'Student not found'
+        });
+    }
+
+    res.status(200).json(student);
+});
+
+module.exports = router;
+
+
+PROJECT STRUCTURE:
+
+project/
+|
+|-- app.js
+|
+|-- routes/
+    |
+    |-- studentRoutes.js
+
+
+INSTALLATION:
+
+npm init -y
+npm install express
+
+
+RUN:
+
+node app.js
+
+
+SERVER:
+
+http://localhost:3000
+
+
+STUDENT ROUTES:
+
+GET /students
+GET /students/:id
+
+
+END OF QUESTION 1
